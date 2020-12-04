@@ -1,0 +1,36 @@
+
+# start server
+npm run server
+
+in package.json under "script" sections, "server" script is defined
+"server": "./node_modules/.bin/ts-node -P ./server/server.tsconfig.json ./server/server.ts",
+
+--------------------
+
+# start angular app
+npm start
+
+in package.json under "script" sections, "start" script is defined
+"start": "./node_modules/.bin/ng serve  --proxy-config ./proxy.json",
+
+proxy.json is
+{
+  "/api": {
+    "target": "http://localhost:9000",
+    "secure": false
+  }
+}
+every call to
+    htt://localhost:4200/api/...   (where angular app is deployed)
+is mapped to  
+    http://localhost:9000/api/...  (where server is deployed)
+
+
+--------------------
+
+see courses.services.ts 
+method loadAllCourses()
+applies the rxJs shareReplay() operator in order to share subscription for every consumer.
+Without shareReplay() for earch consumer (beginnerCourse$, advancedCourses$) of the subscription 
+there will be a call to Http Server.
+
