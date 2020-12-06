@@ -8,6 +8,7 @@ import {CourseDialogComponent} from '../course-dialog/course-dialog.component';
 import { CoursesServices } from '../services/courses.service';
 import { LoadingService } from '../loading/loading.service';
 import { MessagesService } from '../messages/messages.service';
+import { CoursesStore } from '../services/courses.store';
 
 
 @Component({
@@ -22,10 +23,7 @@ export class HomeComponent implements OnInit {
   advancedCourses$: Observable<Course[]>;
 
 
-  constructor(
-    private courseService: CoursesServices,
-    private loadingService: LoadingService,
-    private messagesService: MessagesService) {
+  constructor(private coursesStore: CoursesStore) {
   }
 
   ngOnInit() {
@@ -34,15 +32,19 @@ export class HomeComponent implements OnInit {
 
   }
 
+  /**
+   * Stateful loading courses via CoursesStore service
+   */
   reloadCourses() {
+    this.beginnerCourses$ = this.coursesStore.filterByCategory('BEGINNER');
+    this.advancedCourses$ = this.coursesStore.filterByCategory('ADVANCED');
+  }
 
-    // turn on loading component
-    // this.loadingService.loadingOn();
-    // const courses$ = this.courseService.loadAllCourses()
-    // .pipe(
-    //   map(courses => courses.sort(sortCoursesBySeqNo)),
-    //   finalize(() => this.loadingService.loadingOff()) // finalize RxJs operator is called when observable is completed
-    // );
+  /**
+   * Statless implementation to get the courses
+   */
+  /* 
+  reloadCourses() {
 
     const courses$ = this.courseService.loadAllCourses()
     .pipe(
@@ -51,7 +53,6 @@ export class HomeComponent implements OnInit {
         const message = "Could not load courses";
         this.messagesService.showErrors(message);
         console.log(message, err);
-        
         // we need to replace the observable failed
         // throwError creates and return immediately a new observable
         return throwError(err);
@@ -67,7 +68,7 @@ export class HomeComponent implements OnInit {
       pipe(
         map(courses => courses.filter(course => course.category == 'ADVANCED'))
       );
-    }
+    } */
 
 }
 
