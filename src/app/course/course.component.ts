@@ -13,10 +13,14 @@ import {
   withLatestFrom,
   concatAll, shareReplay, catchError
 } from 'rxjs/operators';
-import {merge, fromEvent, Observable, concat, throwError} from 'rxjs';
+import {merge, fromEvent, Observable, concat, throwError, combineLatest} from 'rxjs';
 import {Lesson} from '../model/lesson';
 import { CoursesServices } from '../services/courses.service';
 
+interface CourseData {
+  course: Course;
+  lessons: Lesson[];
+}
 
 @Component({
   selector: 'course',
@@ -25,29 +29,43 @@ import { CoursesServices } from '../services/courses.service';
 })
 export class CourseComponent implements OnInit {
 
-  course$: Observable<Course>;
-
-  lessons$: Observable<Lesson[]>;
+  // Sigle Data Observable Pattern
+  data$: Observable<CourseData>;
 
   constructor(
       private route: ActivatedRoute,
       private coursesService: CoursesServices) {
-
-
   }
 
   ngOnInit() {
     let courseId = parseInt(this.route.snapshot.paramMap.get('courseId'));
 
-    this.course$ = this.coursesService.loadCourseById(courseId);
+    const course$ = this.coursesService.loadCourseById(courseId)
+      .pipe(
+        startWith(null)
+      );
 
-    this.lessons$ = this.coursesService.loadAllCourseLessons(courseId);
+    const lessons$ = this.coursesService.loadAllCourseLessons(courseId)
+      .pipe(
+        startWith([])
+      );
 
+    // combineLatest emit a value whenerver one of the combined observables emit a value
+    // but for the FIRST value combineLatest waits for both the observable to emit the value.
+    // From the second value combineLatest will emit the value as soon as one of the observable emit a value
+    this.data$ = combineLatest([course$, lessons$])
+      .pipe(
+        map(([course, lessons]) => {
+          return {
+            course,
+            lessons
+          }
+        }),
+        tap(console.log)
+      );
   }
 
-
 }
-
 
 
 
