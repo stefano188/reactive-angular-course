@@ -6,6 +6,7 @@ import { LoadingService } from "../loading/loading.service";
 import { MessagesService } from "../messages/messages.service";
 import { Course, sortCoursesBySeqNo } from "../model/course";
 
+/* STATEFUL SERVICE */
 @Injectable({
     providedIn: 'root'
 })
@@ -52,6 +53,7 @@ export class CoursesStore {
         
         // copy courses into newCourses
         const newCourses: Course[] = courses.slice(0);
+        // const newCourses: Course[] = [...courses]; or spread syntax
 
         newCourses[index] = newCourse;
 

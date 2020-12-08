@@ -7,6 +7,8 @@ import { concatMap, finalize, tap } from "rxjs/operators";
 @Injectable()
 export class LoadingService {
 
+    // BehaviourSubject is an observable that can emit values as well
+    // Also BehaviourSubject remembers the last value emitted by the subject. Very useful for stateful pattern
     private loadingSubject = new BehaviorSubject<boolean>(false);
 
     // loading$ is an observable derived from the private field loadingSubject

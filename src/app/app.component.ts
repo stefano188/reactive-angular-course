@@ -10,8 +10,8 @@ import { AuthStore } from './services/auth.store';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   providers: [
-    LoadingService, // indicates that an instance of LoadingService is available for AppComponent and its child components
-    MessagesService
+    // LoadingService, // indicates that an instance of LoadingService is available for AppComponent and its child components
+    // MessagesService
   ]
 })
 export class AppComponent implements  OnInit {
